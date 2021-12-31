@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
 set(BINARY_NAME "fuel_cost")
-set(APPLICATION_ID "com.example.fuel_cost")
+set(APPLICATION_ID "com.benarmstead.fuel_cost")
 
 cmake_policy(SET CMP0063 NEW)
 

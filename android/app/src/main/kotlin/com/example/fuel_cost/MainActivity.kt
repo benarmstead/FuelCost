@@ -1,4 +1,4 @@
-package com.example.fuel_cost
+package com.benarmstead.fuel_cost
 
 import io.flutter.embedding.android.FlutterActivity
 

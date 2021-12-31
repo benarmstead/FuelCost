@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.fuel_cost">
+    package="com.benarmstead.fuel_cost">
    <application
-        android:label="fuel_cost"
+        android:label="Fuel Cost"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
