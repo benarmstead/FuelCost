@@ -1,61 +1,54 @@
-name: Create Android Release
+# This is a basic workflow to help you get started with Actions
+name: CD
 
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
 on:
   push:
-    branches: [ android_ci ]
-
+    tags:
+      - "android_ci" # on every version tag will build a new android artifact.
 jobs:
-  version:
-    name: Create version number
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Fetch all history for all tags and branches
-      run: |
-        git fetch --prune --depth=10000
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.2
-      with:
-          versionSpec: '5.2.x'
-    - name: Use GitVersion
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.2
-    - name: Create version.txt with nuGetVersion
-      run: echo ${{ steps.gitversion.outputs.nuGetVersion  }} > version.txt
-    - name: Upload version.txt
-      uses: actions/upload-artifact@v2
-      with:
-        name: gitversion
-        path: version.txt
   build:
-    name: Build APK and Create release
-    needs: [ version ]
+    name: Build APK
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-java@v1
-      with:
-        java-version: '12.x'
-    - uses: subosito/flutter-action@v1
-      with:
-        flutter-version: '1.17.0'
-    - name: Get version.txt
-      uses: actions/download-artifact@v2
-      with:
-        name: gitversion
-    - name: Read version
-      id: version
-      uses: juliangruber/read-file-action@v1
-      with:
-        path: version.txt
-    - run: flutter pub get
-    - run: flutter test
-    - run: flutter build apk --release --split-per-abi
-    - run: flutter build appbundle
-    - name: Create a Release in GitHub
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: "build/app/outputs/apk/release/*.apk,build/app/outputs/bundle/release/app-release.aab"
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ steps.version.outputs.content }}
-        commit: ${{ github.sha }}
+      - uses: actions/checkout@v1
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "12.x"
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
+
+      - name: Pub Get Packages
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --split-per-abi --release
+
+      - name: Build APPBUNDLE
+        run: flutter build appbundle --release
+        
+      - name: Sign APKs
+        env:
+          # If you want to generate a keystore secret, run these commands:
+          # keytool -genkey -v -keystore apksign.keystore -alias apksign -keyalg RSA -keysize 4096
+          # cat apksign.keystore | base64
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+        run: |
+          echo "${KEYSTORE_BASE64}" | base64 -d > apksign.keystore
+          for apk in app/build/outputs/apk/release/*-unsigned-*.apk; do
+          out=${apk/-unsigned-/-signed-}
+          ${ANDROID_HOME}/build-tools/30.0.2/apksigner sign --ks apksign.keystore --ks-pass env:KEYSTORE_PASS --out "${out}" "${apk}"
+          echo "$(sha256sum ${out})"
+          done
+          rm apksign.keystore
+          
+      - name: Create Github Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/*.apk"
+          token: ${{ secrets.GITHUB_TOKEN }}
