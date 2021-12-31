@@ -16,4 +16,5 @@ jobs:
       - run: flutter pub get
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
+          webRenderer: html
           baseHref: /fuel_cost/
