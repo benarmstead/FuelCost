@@ -35,8 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
   double width = 400;
   double height = 100;
 
-  var calc = CostCalculator();
   double cost = 0;
+  var calc = CostCalculator();
 
   void rebuild() {
     if (calc.canCalculate()) {
