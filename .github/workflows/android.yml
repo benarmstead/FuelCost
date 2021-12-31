@@ -42,15 +42,14 @@ jobs:
           KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
         run: |
           echo "${KEYSTORE_BASE64}" | base64 -d > apksign.keystore
-          for apk in app/build/outputs/apk/release/*-unsigned-*.apk; do
-          out=${apk/-unsigned-/-signed-}
-          ${ANDROID_HOME}/build-tools/30.0.2/apksigner sign --ks apksign.keystore --ks-pass env:KEYSTORE_PASS --out "${out}" "${apk}"
-          echo "$(sha256sum ${out})"
+          for apk in app/build/outputs/apk/release/*.apk; do
+          ${ANDROID_HOME}/build-tools/30.0.2/apksigner sign --ks apksign.keystore --ks-pass env:KEYSTORE_PASS --out "FuelCost.apk" "${apk}"
+          echo "$(sha256sum FuelCost.apk)"
           done
           rm apksign.keystore
           
       - name: Create Github Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/*.apk"
+          artifacts: "build/app/outputs/apk/release/FuelCost.apk"
           token: ${{ secrets.GITHUB_TOKEN }}
