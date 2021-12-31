@@ -3,7 +3,7 @@ name: Create Android Release
 on:
   push:
     branches:
-    - '1.*'
+    - 'android_ci'
     
 jobs:
   build:
