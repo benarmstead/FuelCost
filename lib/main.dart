@@ -34,6 +34,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final CostCalculator calc = CostCalculator();
   double cost = 0;
 
+  double padding = 10;
+  double width = 400;
+  double height = 100;
+
   void rebuild() {
     if (calc.canCalculate()) {
       cost = calc.calculate();
@@ -47,6 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return false;
   }
 
+  String getCost(multiplier) {
+    // Ensures cost is rounded up and the maths off using the multiplier is sound.
+    var costRounded = cost.toStringAsFixed(2);
+    return (double.parse(costRounded) * multiplier).toStringAsFixed(2);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,15 +65,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Center(
           child: Container(
-              constraints: const BoxConstraints(minWidth: 100, maxWidth: 400),
-              padding: const EdgeInsets.all(10),
+              constraints: BoxConstraints(minWidth: height, maxWidth: width),
+              padding: EdgeInsets.all(padding),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(padding),
                       child: TextField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Distance"),
@@ -76,9 +87,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(padding),
                       child: TextField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(), labelText: "MPG"),
                         onChanged: (passed) => setState(() {
@@ -90,9 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(padding),
                       child: TextField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Price Per Litre"),
@@ -105,12 +118,44 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("One Way: £" + cost.toStringAsFixed(2)),
+                      padding: EdgeInsets.all(padding),
+                      child: Container(
+                          width: width,
+                          height: height - 50,
+                          padding: EdgeInsets.all(padding),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.blue, width: 2.0),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(padding)),
+                          ),
+                          child: Text(
+                            "One Way: £" + getCost(1),
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          )),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Return: £" + (cost * 2).toStringAsFixed(2)),
+                      padding: EdgeInsets.all(padding),
+                      child: Container(
+                          width: width,
+                          height: height - 50,
+                          padding: EdgeInsets.all(padding),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.blue, width: 2.0),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(padding)),
+                          ),
+                          child: Text(
+                            "Return: £" + getCost(2),
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.black),
+                            textAlign: TextAlign.center,
+                          )),
                     ),
                   ])),
         ));
