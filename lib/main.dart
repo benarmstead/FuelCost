@@ -31,12 +31,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final CostCalculator calc = CostCalculator();
-  double cost = 0;
-
   double padding = 10;
   double width = 400;
   double height = 100;
+
+  var calc = CostCalculator();
+  double cost = 0;
 
   void rebuild() {
     if (calc.canCalculate()) {
