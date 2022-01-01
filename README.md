@@ -1,6 +1,8 @@
 # Fuel Cost
 
-A Web, Android, iOS, Linux, Windows and Mac application to calculate the cost of a car journey based on MPG, distance and price of fuel per litre.
+App to calculate the cost of a car journey based on MPG, distance and price of fuel per litre.
+
+Works on Web, Android, iOS, Linux, Windows and Mac.
 
 ## Screenshots
 
