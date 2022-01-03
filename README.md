@@ -13,7 +13,7 @@ Works on Web, Android, iOS, Linux, Windows and Mac.
 
 ### Web
 
-https://benarmstead.co.uk/fuel_cost/
+https://benarmstead.co.uk/FuelCost/
 
 ### Android
 
