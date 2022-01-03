@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             decimal: true),
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: "Distance"),
+                            labelText: "Distance (One way)"),
                         onChanged: (passed) => setState(() {
                           if (validatePassed(passed)) {
                             calc.setDistance(double.parse(passed));
