@@ -3,55 +3,51 @@ name: Desktop release
 on:
   push:
     branches:
-      [ master ]
-
+      [ desktop_cd ]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
+      fail-fast: false # I want results from all OSes even if one fails.
       matrix:
-        os:
-          [ ubuntu-20.04, windows-2019, macos-11 ]
-        mode:
-          [ release ]
-        include:
+        os: [ubuntu-20.04, windows-2019, macos-11]
+        mode: [release]
+        include: # See: https://docs.github.com/ja/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#using-environment-variables-in-a-matrix
           - os: ubuntu-20.04
             subcommand: linux
-            setup_desktop_script: sudo apt-get update -y && sudo apt-get install -y libgtk-3-dev libx11-dev pkg-config cmake ninja-build libblkid-dev liblzma-dev && flutter config --enable-linux-desktop
-            prepare_to_pack_script: sudo apt-get install libgtk-3-0 libblkid1 liblzma5
+            setup_desktop_script: .github/scripts/setup_on_linux.sh
+            prepare_to_pack_script: .github/scripts/prepare_to_pack_for_linux.sh
             distribution_path: build/linux/x64/release
-          #- os: windows-2019
-          #  subcommand: windows
-          #  setup_desktop_script: flutter config --enable-windows-desktop
-          #  prepare_to_pack_script: .github/scripts/prepare_to_pack_for_windows.sh
-          #  distribution_path: build/windows/runner/Release
-          #- os: macos-11
-          #  subcommand: macos
-          #  setup_desktop_script: .github/scripts/setup_on_macos.sh
-          #  prepare_to_pack_script: .github/scripts/prepare_to_pack_for_macos.sh
-          #  distribution_path: build/macos/Build/Products/release
+          - os: windows-2019
+            subcommand: windows
+            setup_desktop_script: .github/scripts/setup_on_windows.sh
+            prepare_to_pack_script: .github/scripts/prepare_to_pack_for_windows.sh
+            distribution_path: build/windows/runner/Release
+          - os: macos-11
+            subcommand: macos
+            setup_desktop_script: .github/scripts/setup_on_macos.sh
+            prepare_to_pack_script: .github/scripts/prepare_to_pack_for_macos.sh
+            distribution_path: build/macos/Build/Products/release
 
-      fail-fast: false
-      
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v1
-      - name: setup flutter
-    #    run: ./scripts/setup_flutter_channel.sh
-    #  - name: setup flutter desktop
-    #    shell: bash
-    #    run: ${{ matrix.setup_desktop_script }}
-    #  - name: doctor
-    #    run: flutter doctor -v
-    #  - name: install dependencies
-    #    run: flutter pub get
-    #  - name: build
-    #    run: flutter build ${{ matrix.subcommand }} --${{ matrix.mode }}
+      - name: setup flutter channel
+        run: .github/scripts/setup_flutter_channel.sh
+      - name: setup flutter desktop
+        shell: bash
+        run: ${{ matrix.setup_desktop_script }}
+      - name: doctor
+        run: flutter doctor -v
+      - name: install dependencies
+        run: flutter pub get
+      - name: build
+        run: flutter build ${{ matrix.subcommand }} --${{ matrix.mode }}
 
-    #  - name: prepare to pack
-    #    shell: bash
-    #    run: ${{ matrix.prepare_to_pack_script }}
+      - name: prepare to pack
+        shell: bash
+        run: ${{ matrix.prepare_to_pack_script }}
 
       # - name: debug
       #   if: ${{ failure() }}
@@ -63,11 +59,11 @@ jobs:
       #     path=$(echo ${{ matrix.distribution_path }} | sed -e 's/_mode_/${{ matrix.mode }}/g')
       #     echo "artifact_target=$path" >> $GITHUB_ENV
 
-    #  - name: output build info
-    #    shell: bash
-    #    run: .github/scripts/output_build_info.sh ${{ matrix.distribution_path }}
+      - name: output build info
+        shell: bash
+        run: .github/scripts/output_build_info.sh ${{ matrix.distribution_path }}
 
-     # - uses: actions/upload-artifact@v2
-     #   with:
-     #     name: pedax-${{ runner.os }}
-     #     path: ${{ matrix.distribution_path }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pedax-${{ runner.os }}
+          path: ${{ matrix.distribution_path }}
