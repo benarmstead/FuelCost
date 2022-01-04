@@ -1,13 +1,9 @@
 name: Publish Fuel Cost Desktop
 
 on:
-  #push:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'tag'
-        required: true
-
+  push:
+    tags:
+      - '*'
 jobs:
   publish_artifacts:
     env:
