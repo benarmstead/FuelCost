@@ -1,0 +1,24 @@
+
+name: Desktop release
+
+on:
+  push:
+    branches:
+      [ desktop_cd ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        os:
+          [ ubuntu-20.04, windows-2019, macos-11 ]
+        mode:
+          [ release ]
+        include:
+          - os: ubuntu-20.04
+            subcommand: linux
+            setup_desktop_script: sudo apt-get update -y && sudo apt-get install -y libgtk-3-dev libx11-dev pkg-config cmake ninja-build libblkid-dev liblzma-dev && flutter config --enable-linux-desktop
+            prepare_to_pack_script: sudo apt-get install libgtk-3-0 libblkid1 liblzma5
+            distribution_path: build/linux/x64/release
