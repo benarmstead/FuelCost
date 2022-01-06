@@ -65,7 +65,7 @@ jobs:
         run: |-
           mkdir -p ${{ env.PUBLISH_DIR }}
           cd ${{ matrix.distribution_path }}
-          zip -r $GITHUB_WORKSPACE/${{ env.PUBLISH_DIR }}/pedax-${{ runner.os }}.zip .
+          zip -r $GITHUB_WORKSPACE/${{ env.PUBLISH_DIR }}/FuelCost-${{ runner.os }}.zip .
       - uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
