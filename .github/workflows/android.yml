@@ -40,24 +40,30 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Setup Java
+        if: runner.os == 'Linux'
         uses: actions/setup-java@v1
         with:
           java-version: "12.x"
       - name: Setup Flutter
+        if: runner.os == 'Linux'
         uses: subosito/flutter-action@v1
         with:
           channel: "stable"
 
       - name: Pub Get Packages
+        if: runner.os == 'Linux'
         run: flutter pub get
 
       - name: Build APK
+        if: runner.os == 'Linux'
         run: flutter build apk --split-per-abi --release
 
       - name: Build APPBUNDLE
+        if: runner.os == 'Linux'
         run: flutter build appbundle --release
         
       - name: Sign APKs
+        if: runner.os == 'Linux'
         env:
           # If you want to generate a keystore secret, run these commands:
           # keytool -genkey -v -keystore apksign.keystore -alias apksign -keyalg RSA -keysize 4096
@@ -73,10 +79,13 @@ jobs:
           rm apksign.keystore
           
       - name: Create Github Release
+        if: runner.os == 'Linux'
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/release/*.apk"
           token: ${{ secrets.GITHUB_TOKEN }}
+          
+## Desktop begins
           
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v1
