@@ -6,7 +6,7 @@ name: CD
 on:
   push:
     tags:
-      - '*'
+      - 'test'
 jobs:
   build:
     name: Build APK
