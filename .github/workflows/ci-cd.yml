@@ -166,7 +166,7 @@ jobs:
     - run: flutter pub get
 
     # Build the application for all targets.
-    - run: flutter build -v ${{ matrix.build_target }} --release
+    - run: flutter build ${{ matrix.build_target }} --release
 
     #### Package the builds
 
