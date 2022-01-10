@@ -78,11 +78,25 @@ jobs:
           done
           rm apksign.keystore
           
+      - name: Sign ABB
+        if: runner.os == 'Linux'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+        run: |
+          echo "${KEYSTORE_BASE64}" | base64 -d > apksign.keystore
+          for aab in build/app/outputs/bundle/release/*.aab; do
+          ${ANDROID_HOME}/build-tools/30.0.2/apksigner sign --ks apksign.keystore --ks-pass env:KEYSTORE_PASS --out "FuelCost.aab" "${aab}"
+          echo "$(sha256sum FuelCost.aab)"
+          done
+          rm apksign.keystore
+        
+          
       - name: Create Github Release
         if: runner.os == 'Linux'
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/*.apk"
+          artifacts: "build/app/outputs/apk/release/*.apk, build/app/outputs/bundle/release/*.aab"
           token: ${{ secrets.GITHUB_TOKEN }}
           
 ## Desktop begins
