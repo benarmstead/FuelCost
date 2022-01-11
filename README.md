@@ -15,28 +15,10 @@ Works on Web, Android, iOS, Linux, Windows and Mac.
 
 https://benarmstead.co.uk/fuel_cost/
 
-### Android
+### Android/Linux/Windows/Mac
 
-Download the apk [here](https://github.com/benarmstead/fuel_cost/releases/latest/).
+Binaries for these platforms can be found [here](https://github.com/benarmstead/fuel_cost/releases/latest/).
 
 ### iOS
 
 This app will work on iOS, however I don't have an apple developer account therefore will not be listing it on the app store.
-
-### Linux
-
-> Pre built binaries coming soon
-
-`flutter build linux`
-
-### Windows
-
-> Pre built binaries coming soon
-
-`flutter build windows`
-
-### Mac
-
-> Pre built binaries coming soon
-
-`flutter build macos`
